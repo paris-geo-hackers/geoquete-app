@@ -20,7 +20,6 @@ const Heading = styled.p`
   padding:0;
   font-size: 1.5em;
   color:#0f1d40;
-  line-height:2.1rem;
   text-align: center;
   font-family: "SF Pro Display",sans-serif;
 `;
