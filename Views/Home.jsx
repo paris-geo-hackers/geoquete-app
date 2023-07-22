@@ -1,8 +1,32 @@
-const Main = styled.div`
-        overflow: hidden;
-        font-size: 16px;
-`;
+State.init({
+    currentView: "home"
+});
 
-return <Main>
+let views = {
+  home: (
+    <>
+      <Widget src="mattb.near/widget/Geoquete.Components.CreateQuest" />
+    </>
+  ),
+  create: (
+    <>
+      <Widget src="mattb.near/widget/Geoquete.Components.CreateQuest" />
+    </>
+  ),
+  join: (
+    <>
+      <Widget src="mattb.near/widget/Geoquete.Components.QuestList" />
+    </>
+  ),
+};
 
-</Main>;
+return (
+  <>
+    <Widget src="mattb.near/widget/Geoquete.Components.Header" 
+        props={{
+            onRefresh: (tab) => State.update({ currentView: tab })
+        }}
+    />
+    {state.currentView in views ? views[state.currentView] : "404"}
+  </>
+);
