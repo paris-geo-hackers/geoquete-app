@@ -1,5 +1,8 @@
 const CreateQuest = styled.div`
-        margin: 0 auto;
+        position: absolute;
+        top: 10%;
+        left: 50%;
+        transform: translate(-50%, -10%);
         width:100%;
         max-width: 400px;
         border: 1px solid rgba(0,0,0, .15);
@@ -74,6 +77,9 @@ const CreateQuest = styled.div`
         .form-group {
             margin-bottom: .5rem;
         }
+        .selected {
+          display: none;
+        }
 `;
 
 const LocationList = styled.div`
@@ -124,86 +130,117 @@ const LocationList = styled.div`
     }
 `;
 
+const Button = styled.div`
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-weight:bold;
+    color:#fff;
+    width:100%;
+    height:50px;
+    border-radius:10px;
+    background-color:#2fbc2f;
+    text-align:center;
+    cursor: pointer;
+    user-select: none;
+    box-shadow: 0 3px 3px rgba(0,0,0,.3);
+
+    &:active {
+      box-shadow: 0 0 0 rgba(0,0,0,0);
+      transform: translateY(2px);
+    }
+`;
+
 State.init({
-  locations: [
-    "Possible location 1",
-    "Possible location 2",
-    "Possible location 3",
-    "Possible location 4",
-    "Possible location 5",
-  ],
-  location: "",
-  city: "",
+    locations: [
+        "Possible location 1",
+        "Possible location 2",
+        "Possible location 3",
+        "Possible location 4",
+        "Possible location 5",
+    ],
+    location: "",
+    city: "",
 });
 
+const cities = ["Paris"];
+
 const clean = (index) => {
-  let locations = state.locations;
-  locations[index] = "";
-  State.update({ locations: locations });
+    let locations = state.locations;
+    locations[index] = "";
+    State.update({ locations });
 };
 
-const search = (val) => {};
+const match = () => {
+    const inputText = state.city.toLowerCase();
+
+    return inputText
+        ? cities.filter((city) => city.toLowerCase().includes(inputText))
+        : [];
+};
+
+const handleCityClick = (city) => {
+    State.update({ city });
+};
 
 return (
-  <CreateQuest>
-    <h1>Create a Quête</h1>
+    <CreateQuest>
+        <h1>Create a Quête:</h1>
 
-    <div className="form-group">
-      <input id="name" type="text" placeholder="Quête name" required />
-      <label for="name">Quête name</label>
-    </div>
+        <div className="form-group">
+            <input id="name" type="text" placeholder="Quête name" required />
+            <label for="name">Quête name</label>
+        </div>
 
-    <div className="form-group">
+        <div className="form-group">
       <textarea
-        id="description"
-        type="text"
-        placeholder="Description"
-        rows="6"
-        required
-        className="description form-control"
+          id="description"
+          type="text"
+          placeholder="Description"
+          rows="6"
+          required
+          className="description form-control"
       />
-      <label for="description">Description</label>
-    </div>
+            <label for="description">Description</label>
+        </div>
 
-    <div className="form-group">
-      <input id="eth" type="number" placeholder="ETH" />
-      <label className="eth-label" for="eth">
-        ETH
-      </label>
-    </div>
+        <div className="form-group">
+            <input id="eth" type="number" placeholder="ETH" />
+            <label className="eth-label" for="eth">
+                ETH
+            </label>
+        </div>
 
-    <div className="form-group">
-      <input id="people" type="number" placeholder="Max. amount of Explorers" />
-      <label for="people">Max. amount of Explorers</label>
-    </div>
+        <div className="form-group">
+            <input id="people" type="number" placeholder="Max. amount of Explorers" />
+            <label for="people">Max. amount of Explorers</label>
+        </div>
 
-    <div className="form-group">
-      <input
-        id="city"
-        type="text"
-        placeholder="City"
-        value={state.city}
-        onChange={() => search()}
-      />
-      <ul>
-        <li>Paris</li>
-      </ul>
-    </div>
-
-    {state.city && (
-      <LocationList className="form-group">
-        {state.locations.map((val, idx) => (
-          <div className="location-wrapper">
+        <div className="form-group">
             <input
-              type="text"
-              value={state.locations[idx]}
-              onClick={() => clean(idx)}
+                id="city"
+                type="text"
+                placeholder="City"
+                onChange={(event) => {
+                    State.update({ city: event.target.value });
+                }}
+                value={state.city}
             />
-          </div>
-        ))}
-      </LocationList>
-    )}
+            <ul>
+                {match().map((city, id) => {
+                    return (
+                        <li
+                            key={id}
+                            onClick={() => handleCityClick(city)}
+                            className={state.city === city ? "selected" : ""}
+                        >
+                            {city}
+                        </li>
+                    );
+                })}
+            </ul>
+        </div>
 
-    <button>Create Quest</button>
-  </CreateQuest>
+        <Button>Create Quest</Button>
+    </CreateQuest>
 );
