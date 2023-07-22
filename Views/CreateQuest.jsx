@@ -14,8 +14,8 @@ const CreateQuest = styled.div`
             font-weight: 600;
             margin-bottom: 2rem;
         }
-        input {
-
+        input, textarea {
+            resize: none;
             &::placeholder {
                 font-size: .8rem;
             }
@@ -45,6 +45,30 @@ const CreateQuest = styled.div`
             display: block;
             transition: all .3s;
         }
+
+        ul { 
+          list-style-type: none;
+          position: relative;
+        }
+
+        li {
+          width: 100%;
+          position: absolute;
+          border: 1px solid rgba(0,0,0, .1);
+          top: 2px;
+          left: 0;
+          padding: 8px;
+          border-radius: 5px; 
+          background-color: white;
+          box-shadow: 1px 4px 8px rgba(0,0,0,.2);
+          font-size: .8rem;
+
+          &:hover {
+            cursor: pointer;
+            background-color: #f0eded;
+          }
+        }
+
         .eth-label {
             margin-top: -1.7rem;
             margin-left: 19rem;
@@ -105,11 +129,11 @@ const LocationList = styled.div`
 
 State.init({
     locations: [
-        "Location 1",
-        "Location 2",
-        "Location 3",
-        "Location 4",
-        "Location 5",
+        "Possible location 1",
+        "Possible location 2",
+        "Possible location 3",
+        "Possible location 4",
+        "Possible location 5",
     ],
     location: "",
     city: "",
@@ -121,13 +145,27 @@ const clean = (index) => {
     State.update({ locations: locations });
 };
 
+const search = (val) => {};
+
 return (
     <CreateQuest>
         <h1>Create a Quête:</h1>
 
         <div className="form-group">
-            <input id="name" type="text" placeholder="Quête name" />
+            <input id="name" type="text" placeholder="Quête name" required />
             <label for="name">Quête name</label>
+        </div>
+
+        <div className="form-group">
+      <textarea
+          id="description"
+          type="text"
+          placeholder="Description"
+          rows="6"
+          required
+          className="description form-control"
+      />
+            <label for="description">Description</label>
         </div>
 
         <div className="form-group">
@@ -143,8 +181,16 @@ return (
         </div>
 
         <div className="form-group">
-            <input id="city" type="text" placeholder="City" value={state.city} />
-            <label for="city">City</label>
+            <input
+                id="city"
+                type="text"
+                placeholder="City"
+                value={state.city}
+                onChange={() => search()}
+            />
+            <ul>
+                <li>Paris</li>
+            </ul>
         </div>
 
         {state.city && (
@@ -160,5 +206,7 @@ return (
                 ))}
             </LocationList>
         )}
+
+        <button>Create Quest</button>
     </CreateQuest>
 );
