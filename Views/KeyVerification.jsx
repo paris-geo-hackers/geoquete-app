@@ -57,11 +57,11 @@ State.init({
 
 return (
     <KeyVerification>
-        <h1> You found one key 🗝️ </h1>
+        <h1> You found a key! 🗝️ </h1>
         <p>
-            Congratulations! You're now closer to your next destination! Before you
-            collect the artifact, you'll need to submit a picture of you on the spot,
-            along or with your team.
+            Congratulations! You're now one step closer to your next destination!
+            Before you collect the artifact, please submit a picture of yourself on
+            the spot, either alone or with your team.
         </p>
         <div className="file-button-wrapper">
             <IpfsImageUpload image={state.img} />
