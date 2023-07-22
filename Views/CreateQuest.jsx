@@ -1,8 +1,5 @@
 const CreateQuest = styled.div`
-        position: absolute;
-        top: 10%;
-        left: 50%;
-        transform: translate(-50%, -10%);
+        margin: 0 auto;
         width:100%;
         max-width: 400px;
         border: 1px solid rgba(0,0,0, .15);
@@ -128,85 +125,85 @@ const LocationList = styled.div`
 `;
 
 State.init({
-    locations: [
-        "Possible location 1",
-        "Possible location 2",
-        "Possible location 3",
-        "Possible location 4",
-        "Possible location 5",
-    ],
-    location: "",
-    city: "",
+  locations: [
+    "Possible location 1",
+    "Possible location 2",
+    "Possible location 3",
+    "Possible location 4",
+    "Possible location 5",
+  ],
+  location: "",
+  city: "",
 });
 
 const clean = (index) => {
-    let locations = state.locations;
-    locations[index] = "";
-    State.update({ locations: locations });
+  let locations = state.locations;
+  locations[index] = "";
+  State.update({ locations: locations });
 };
 
 const search = (val) => {};
 
 return (
-    <CreateQuest>
-        <h1>Create a Quête:</h1>
+  <CreateQuest>
+    <h1>Create a Quête:</h1>
 
-        <div className="form-group">
-            <input id="name" type="text" placeholder="Quête name" required />
-            <label for="name">Quête name</label>
-        </div>
+    <div className="form-group">
+      <input id="name" type="text" placeholder="Quête name" required />
+      <label for="name">Quête name</label>
+    </div>
 
-        <div className="form-group">
+    <div className="form-group">
       <textarea
-          id="description"
-          type="text"
-          placeholder="Description"
-          rows="6"
-          required
-          className="description form-control"
+        id="description"
+        type="text"
+        placeholder="Description"
+        rows="6"
+        required
+        className="description form-control"
       />
-            <label for="description">Description</label>
-        </div>
+      <label for="description">Description</label>
+    </div>
 
-        <div className="form-group">
-            <input id="eth" type="number" placeholder="ETH" />
-            <label className="eth-label" for="eth">
-                ETH
-            </label>
-        </div>
+    <div className="form-group">
+      <input id="eth" type="number" placeholder="ETH" />
+      <label className="eth-label" for="eth">
+        ETH
+      </label>
+    </div>
 
-        <div className="form-group">
-            <input id="people" type="number" placeholder="Max. amount of Explorers" />
-            <label for="people">Max. amount of Explorers</label>
-        </div>
+    <div className="form-group">
+      <input id="people" type="number" placeholder="Max. amount of Explorers" />
+      <label for="people">Max. amount of Explorers</label>
+    </div>
 
-        <div className="form-group">
+    <div className="form-group">
+      <input
+        id="city"
+        type="text"
+        placeholder="City"
+        value={state.city}
+        onChange={() => search()}
+      />
+      <ul>
+        <li>Paris</li>
+      </ul>
+    </div>
+
+    {state.city && (
+      <LocationList className="form-group">
+        {state.locations.map((val, idx) => (
+          <div className="location-wrapper">
             <input
-                id="city"
-                type="text"
-                placeholder="City"
-                value={state.city}
-                onChange={() => search()}
+              type="text"
+              value={state.locations[idx]}
+              onClick={() => clean(idx)}
             />
-            <ul>
-                <li>Paris</li>
-            </ul>
-        </div>
+          </div>
+        ))}
+      </LocationList>
+    )}
 
-        {state.city && (
-            <LocationList className="form-group">
-                {state.locations.map((val, idx) => (
-                    <div className="location-wrapper">
-                        <input
-                            type="text"
-                            value={state.locations[idx]}
-                            onClick={() => clean(idx)}
-                        />
-                    </div>
-                ))}
-            </LocationList>
-        )}
-
-        <button>Create Quest</button>
-    </CreateQuest>
+    <button>Create Quest</button>
+  </CreateQuest>
 );
