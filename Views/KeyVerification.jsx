@@ -57,7 +57,7 @@ State.init({
 
 return (
     <KeyVerification>
-        <h1>You found a key!</h1>
+        <h1> You found one key 🗝️ </h1>
         <p>
             Congratulations! You're now closer to your next destination! Before you
             collect the artifact, you'll need to submit a picture of you on the spot,
