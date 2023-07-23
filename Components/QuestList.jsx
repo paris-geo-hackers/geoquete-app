@@ -1,7 +1,15 @@
 State.init({
   sdk: null,
   quests: [],
+  account: null,
 });
+
+if (!state.account) {
+  const accounts = Ethers.send("eth_requestAccounts", []);
+  if (accounts.length > 0) {
+    State.update({ account: accounts[0] });
+  }
+}
 
 const Main = styled.div`
     width:100%;
@@ -33,19 +41,21 @@ const loadQuests = () => {
       }
 
       const quest = {
+        id: i,
         creator: response["creator"],
-        creatorFee: response["creatorFee"]["_hex"],
+        creatorFee: state.sdk.hexToInteger(response["creatorFee"]["_hex"]),
         location: response["location"],
-        numberOfPlayers: response["numberOfPlayers"]["_hex"],
         payoutCompleted: response["payoutCompleted"],
         players: response["players"],
         questName: response["questName"],
-        questPrize: response["questPrize"]["_hex"],
+        questPrize: state.sdk.hexToInteger(response["questPrize"]["_hex"]),
         questStatus: response["questStatus"],
         winner: response["winner"],
       };
 
-      State.update({ quests: [...state.quests, quest] });
+      let quests = state.quests;
+      quests.push(quest);
+      State.update({ quests: quests });
     });
   }
 };
@@ -75,6 +85,14 @@ return (
         src="mattb.near/widget/Geoquete.Components.Quest"
         props={{
           quest,
+          onJoin: (questId) => {
+            console.log(state.account);
+            state.sdk.allowSpend(1000000000).then((rawResponse) => {
+              state.sdk.joinQuest(questId).then((response) => {
+                console.log(response);
+              });
+            });
+          },
         }}
       />
     ))}

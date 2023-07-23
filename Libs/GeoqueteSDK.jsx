@@ -1,11 +1,24 @@
 const { onLoad, loaded } = props;
 
 const TOKEN_DECIMALS = 18;
-const CONTRACT_ADDRESS = "0x3C6DdF92d31E1728C23c062b3C1D552E6eA77137";
-const CONTRACT_ABI = fetch(
+const GEOQUETE_CONTRACT_ADDRESS = "0x3C6DdF92d31E1728C23c062b3C1D552E6eA77137";
+const APECOIN_CONTRACT_ADDRESS = "0x328507DC29C95c170B56a1b3A758eB7a9E73455c";
+const GEOQUETE_CONTRACT_ABI = fetch(
   "https://raw.githubusercontent.com/paris-geo-hackers/ParisContracts/main/contracts/Game.json"
 );
-const iface = new ethers.utils.Interface(CONTRACT_ABI.body);
+
+const APECOIN_CONTRACT_ABI = fetch(
+  "https://raw.githubusercontent.com/paris-geo-hackers/ParisContracts/main/contracts/ApeCoinToken.json"
+);
+
+const APECOIN_CONTRACT_METHODS = [
+  "function increaseAllowance(address spender, uint256 addedValue) public {}",
+];
+
+const GEOQUETE_CONTRACT_METHODS = ["function joinQuest(uint256 _questId) {}"];
+
+const iface = new ethers.utils.Interface(GEOQUETE_CONTRACT_ABI.body);
+const apecoinIface = new ethers.utils.Interface(APECOIN_CONTRACT_ABI.body);
 
 const GeoqueteSDK = {
   encode: (method, params) => {
@@ -16,7 +29,7 @@ const GeoqueteSDK = {
   },
   call: (method, params) => {
     return Ethers.provider().call({
-      to: CONTRACT_ADDRESS,
+      to: GEOQUETE_CONTRACT_ADDRESS,
       data: GeoqueteSDK.encode(method, params),
     });
   },
@@ -28,6 +41,7 @@ const GeoqueteSDK = {
     return GeoqueteSDK.call("createQuest", [
       quest.questName,
       quest.location,
+      quest.description,
       quest.coordinates,
       quest.numberOfPlayers,
       quest.questPrize,
@@ -35,10 +49,29 @@ const GeoqueteSDK = {
     ]);
   },
   joinQuest: (questId) => {
-    return GeoqueteSDK.call("joinQuest", [questId]);
+    // Test
+    const contract = new ethers.Contract(
+      GEOQUETE_CONTRACT_ADDRESS,
+      GEOQUETE_CONTRACT_METHODS,
+      Ethers.provider().getSigner()
+    );
+
+    return contract.joinQuest(questId, {
+      gasPrice: ethers.utils.parseUnits("100", "gwei"),
+      gasLimit: 1000000,
+    });
   },
   submitSolution: (questId, zkProof, ipfsPhotoUrl) => {
     return GeoqueteSDK.call("submitSolution", [questId, zkProof, ipfsPhotoUrl]);
+  },
+  allowSpend: (amount) => {
+    const contract = new ethers.Contract(
+      APECOIN_CONTRACT_ADDRESS,
+      APECOIN_CONTRACT_METHODS,
+      Ethers.provider().getSigner()
+    );
+
+    return contract.increaseAllowance(GEOQUETE_CONTRACT_ADDRESS, amount);
   },
   hexToInteger: (hex) => {
     return parseInt(hex, 16) / Math.pow(10, TOKEN_DECIMALS);

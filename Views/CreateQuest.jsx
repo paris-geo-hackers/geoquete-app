@@ -149,93 +149,151 @@ const Button = styled.div`
 `;
 
 State.init({
-    location: "",
-    city: "",
+  sdk: null,
+  questName: "",
+  questPrize: null,
+  numberOfPlayers: "",
+  description: "",
+  location: "",
+  city: "",
 });
 
 const cities = ["Paris"];
 
 const match = () => {
-    const inputText = state.city.toLowerCase();
+  const inputText = state.city.toLowerCase();
 
-    return inputText
-        ? cities.filter((city) => city.toLowerCase().includes(inputText))
-        : [];
+  return inputText
+    ? cities.filter((city) => city.toLowerCase().includes(inputText))
+    : [];
 };
 
 const handleCityClick = (city) => {
-    State.update({ location: "Eiffel Tower, Paris France" });
-    State.update({ city });
+  State.update({ location: "Eiffel Tower, Paris France" });
+  State.update({ city });
+};
+
+const createQuest = () => {
+  state.sdk
+    .createQuest({
+      questName: state.questName,
+      questPrize: state.questPrize,
+      numberOfPlayers: state.numberOfPlayers,
+      location: state.city,
+      description: state.description,
+      coordinates: [],
+    })
+    .then((rawResponse) => {
+      const response = state.sdk.decode("createQuest", rawResponse);
+      console.log(response);
+    });
 };
 
 return (
-    <CreateQuest>
-        <h1>Create a Quête:</h1>
-
-        <div className="form-group">
-            <input id="name" type="text" placeholder="Quête name" required />
-            <label for="name">Quête name</label>
-        </div>
-
-        <div className="form-group">
-      <textarea
-          id="description"
-          type="text"
-          placeholder="Description"
-          rows="6"
-          required
-          className="description form-control"
+  <CreateQuest>
+    <div
+      style={{
+        display: "none",
+      }}
+    >
+      <Widget
+        src="mattb.near/widget/Geoquete.Libs.GeoqueteSDK"
+        props={{
+          onLoad: (sdk) => State.update({ sdk: sdk }),
+          loaded: !!state.sdk,
+        }}
       />
-            <label for="description">Description</label>
-        </div>
+    </div>
 
-        <div className="form-group">
-            <input id="eth" type="number" placeholder="ETH" />
-            <label className="eth-label" for="eth">
-                ETH
-            </label>
-        </div>
+    <h1>Create a Quête:</h1>
 
-        <div className="form-group">
-            <input id="people" type="number" placeholder="Max. amount of Explorers" />
-            <label for="people">Max. amount of Explorers</label>
-        </div>
+    <div className="form-group">
+      <input
+        id="name"
+        type="text"
+        placeholder="Quête name"
+        value={state.questName}
+        onChange={(event) => State.update({ questName: event.target.value })}
+        required
+      />
+      <label for="name">Quête name</label>
+    </div>
 
-        <div className="form-group">
-            <input
-                id="city"
-                type="text"
-                placeholder="City"
-                onChange={(event) => {
-                    State.update({ city: event.target.value });
-                }}
-                value={state.city}
-            />
-            <ul>
-                {match().map((city, id) => {
-                    return (
-                        <li
-                            key={id}
-                            onClick={() => handleCityClick(city)}
-                            className={state.city === city ? "selected" : ""}
-                        >
-                            {city}
-                        </li>
-                    );
-                })}
-            </ul>
-        </div>
+    <div className="form-group">
+      <textarea
+        id="description"
+        type="text"
+        placeholder="Description"
+        rows="6"
+        required
+        className="description form-control"
+        value={state.description}
+        onChange={(event) => State.update({ description: event.target.value })}
+      />
+      <label for="description">Description</label>
+    </div>
 
-        <div className="form-group">
-            <input
-                id="location"
-                type="text"
-                value={state.location}
-                placeholder="Location"
-            />
-            <label for="location">Location</label>
-        </div>
+    <div className="form-group">
+      <input
+        id="eth"
+        type="number"
+        placeholder="APE"
+        value={state.questPrize}
+        onChange={(event) => State.update({ questPrize: event.target.value })}
+      />
+      <label className="eth-label" for="eth">
+        APE
+      </label>
+    </div>
 
-        <Button>Create Quest</Button>
-    </CreateQuest>
+    <div className="form-group">
+      <input
+        id="people"
+        type="number"
+        value={state.numberOfPlayers}
+        onChange={(event) =>
+          State.update({ numberOfPlayers: event.target.value })
+        }
+        placeholder="Max. amount of Explorers"
+      />
+      <label for="people">Max. amount of Explorers</label>
+    </div>
+
+    <div className="form-group">
+      <input
+        id="city"
+        type="text"
+        placeholder="City"
+        onChange={(event) => {
+          State.update({ city: event.target.value });
+        }}
+        value={state.city}
+      />
+      <ul>
+        {match().map((city, id) => {
+          return (
+            <li
+              key={id}
+              onClick={() => handleCityClick(city)}
+              className={state.city === city ? "selected" : ""}
+            >
+              {city}
+            </li>
+          );
+        })}
+      </ul>
+    </div>
+
+    <div className="form-group">
+      <input
+        id="location"
+        type="text"
+        value={state.location}
+        placeholder="Location"
+      />
+      <label for="location">Location</label>
+    </div>
+
+    <Button onClick={() => createQuest()}>Create Quest</Button>
+  </CreateQuest>
 );

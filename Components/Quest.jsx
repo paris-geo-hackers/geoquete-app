@@ -1,4 +1,8 @@
-const { challenge } = props;
+const { quest, onJoin } = props;
+
+State.update({
+  sdk: null,
+});
 
 const Box = styled.div`
     box-sizing:border-box;
@@ -24,6 +28,7 @@ const Status = styled.div`
     color:#fff;
     font-weight:bold;
     margin:10px 0;
+    text-transform:capitalize;
 `;
 
 const Button = styled.div`
@@ -37,19 +42,31 @@ const Button = styled.div`
     border-radius:10px;
     background-color:#2fbc2f;
     text-align:center;
+    cursor: pointer;
+    user-select: none;
+    box-shadow: 0 3px 3px rgba(0,0,0,.3);
+
+    &:active {
+      box-shadow: 0 0 0 rgba(0,0,0,0);
+      transform: translateY(2px);
+    }
+
+    &.verify {
+        background-color:#288fbf;
+    }
 `;
 
 const Prize = styled.div`
-  display:flex;
+  display:inline-block;
+  width:100%;
   font-size:.7rem;
   background-color:orange;
   border-radius:20px;
-  padding:.2rem .2rem;
+  padding:.2rem .5rem;
   color:#fff;
   font-weight:bold;
   min-width:70px;
-  justify-content:center;
-  align-items:center;
+  max-width:120px;
 
   img {
     max-width:20px;
@@ -72,7 +89,7 @@ const Badges = styled.div`
 
 const Description = styled.div`
   opacity:.7;
-  padding: 1rem .2rem;
+  padding: .8rem .2rem;
   font-size:.8rem;
 
   p {
@@ -81,15 +98,27 @@ const Description = styled.div`
   }
 `;
 
+const Location = styled.div`
+  font-size:1.4rem;
+  font-weight:bold;
+  padding:.5rem 0;
+
+  span {
+    img {
+      max-width:25px;
+    }
+  }
+`;
+
 return (
   <Box>
-    <Title>The Lost Jewels of Montmartre</Title>
+    <Title>{quest.questName || "The Lost Jewels of Montmartre"}</Title>
     <Badges>
       <Prize>
         <img src="https://ipfs.near.social/ipfs/bafkreifgnes6e5xuxaeknpm3q7tgk4m5yy2zb4nof3th34pawx5lbr5654" />{" "}
-        1 ETH
+        {quest.questPrize || "10000"} APE
       </Prize>
-      <Status>Ongoing</Status>
+      <Status>{quest.questStatus || "ongoing"}</Status>
     </Badges>
     <Description>
       <p>
@@ -98,6 +127,17 @@ return (
         in order to find the treasure.
       </p>
     </Description>
-    <Button>Join the challenge</Button>
+    <Location>
+      <span>
+        <img src="https://ipfs.near.social/ipfs/bafkreig2lvgnd5tftg3ehone77plgagwaglnmp2hp7pirtpibecrb7ug4i" />
+      </span>
+      {quest.location || "Paris"}
+    </Location>
+    <Button
+      className={quest.alreadyJoined ? "verify" : ""}
+      onClick={() => onJoin(quest.id)}
+    >
+      {quest.alreadyJoined ? "Verify my location" : "Join the challenge"}
+    </Button>
   </Box>
 );
